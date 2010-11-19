@@ -1,0 +1,8 @@
+[Desktop Entry]
+_Name=Transcribe
+_Comment=Transcribe application
+Categories=GNOME;Utility;
+Exec=transcribe
+Icon=transcribe
+Terminal=false
+Type=Application
