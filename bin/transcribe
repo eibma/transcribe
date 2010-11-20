@@ -1,13 +1,26 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 ### BEGIN LICENSE
-# This file is in the public domain
+# Copyright (C) 2010 Frederik Elwert <frederik.elwert@web.de>
+# This program is free software: you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License version 3, as published 
+# by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but 
+# WITHOUT ANY WARRANTY; without even the implied warranties of 
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+# PURPOSE.  See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along 
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
 ### END LICENSE
 
 import sys
 import os
 import gtk
 
+import locale
+locale.setlocale(locale.LC_ALL, '')
 import gettext
 from gettext import gettext as _
 gettext.textdomain('transcribe')
@@ -31,7 +44,7 @@ if (os.path.exists(os.path.join(PROJECT_ROOT_DIRECTORY, 'transcribe'))
 
 from transcribe import (
     AboutTranscribeDialog, PreferencesTranscribeDialog)
-from transcribe.helpers import get_builder
+from transcribe.helpers import get_builder, get_data_file
 
 
 class TranscribeWindow(gtk.Window):
@@ -70,15 +83,52 @@ class TranscribeWindow(gtk.Window):
         # Get a reference to the builder and set up the signals.
         self.builder = builder
         self.builder.connect_signals(self)
+        
+        actions = gtk.ActionGroup('Actions')
+        actions.add_actions((('menu_file', None, _('_File')),
+                             ('menu_playback', None, _('_Playback')),
+                             ('menu_help', None, _('_Help')),
+                             
+                             ('open', gtk.STOCK_OPEN, None,
+                              '<Ctrl>o', None, self.open),
+                             ('open_recent', None, _('Open _Recent')),
+                             ('quit', gtk.STOCK_QUIT, None,
+                              '<Ctrl>q', None, self.quit),
+                              
+                             ('slower', None, _('Slower'),
+                              '<Ctrl>s', None, self.change_speed),
+                             ('faster', None, _('Faster'),
+                              '<Ctrl>f', None, self.change_speed),
+                             ('skip', None, _('Skip to …'),
+                              '<Ctrl>k', None, self.skip_to),
+                              
+                             ('about', gtk.STOCK_ABOUT, None,
+                              None, None, self.about)
+                             ))
+        play_action = gtk.ToggleAction('play', None, None, 
+                                       gtk.STOCK_MEDIA_PLAY)
+        play_action.connect_proxy(self.builder.get_object('button_play'))
+        play_action.connect('activate', self.play)
+        actions.add_action(play_action)
+        
+        self.ui = gtk.UIManager()
+        self.add_accel_group(self.ui.get_accel_group())
+        self.ui.insert_action_group(actions)
+        self.ui.add_ui_from_file(get_data_file('ui', 'TranscribeMenu.ui'))
+        vbox = self.builder.get_object('vbox1')
+        menubar = self.ui.get_widget('/menubar_main')
+        vbox.pack_start(menubar)
+        vbox.reorder_child(menubar, 0)
 
         global launchpad_available
         if launchpad_available:
             # see https://wiki.ubuntu.com/UbuntuDevelopment/Internationalisation/Coding for more information
             # about LaunchpadIntegration
-            helpmenu = self.builder.get_object('helpMenu')
+            helpmenu = self.ui.get_widget('/menubar_main/menu_help')
             if helpmenu:
                 LaunchpadIntegration.set_sourcepackagename('transcribe')
-                LaunchpadIntegration.add_items(helpmenu, 0, False, True)
+                LaunchpadIntegration.add_items(helpmenu.get_submenu(),
+                                               0, False, True)
             else:
                 launchpad_available = False
 
@@ -87,6 +137,8 @@ class TranscribeWindow(gtk.Window):
         #self.preferences = dlg.get_preferences()
 
         # Code for other initialization actions should be added here.
+        speedscale = self.builder.get_object('scale_speed')
+        speedscale.set_value(1)
 
     def about(self, widget, data=None):
         """Display the about box for transcribe."""
@@ -102,6 +154,21 @@ class TranscribeWindow(gtk.Window):
             # Make any updates based on changed preferences here.
             pass
         prefs.destroy()
+        
+    def open(self, action):
+        pass
+        
+    def play(self, action):
+        logging.debug('play action triggered')
+        
+    def change_speed(self, action):
+        pass
+        
+    def skip_to(self, action):
+        pass
+        
+    def on_scale_speed_format_value(self, widget, value, data=None):
+        return u'%s\xd7' % locale.format('%.1f', value)
 
     def quit(self, widget, data=None):
         """Signal handler for closing the TranscribeWindow."""

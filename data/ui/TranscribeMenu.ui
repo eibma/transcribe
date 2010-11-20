@@ -1,0 +1,19 @@
+<ui>
+  <menubar name="menubar_main">
+    <menu action="menu_file">
+      <menuitem action="open"/>
+      <menuitem action="open_recent"/>
+      <separator/>
+      <menuitem action="quit"/>
+    </menu>
+    <menu action="menu_playback">
+      <menuitem action="play"/>
+      <menuitem action="slower"/>
+      <menuitem action="faster"/>
+      <menuitem action="skip"/>
+    </menu>
+    <menu action="menu_help">
+      <menuitem action="about"/>
+    </menu>
+  </menubar>
+</ui>
