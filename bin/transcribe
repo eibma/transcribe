@@ -29,6 +29,10 @@ import gettext
 from gettext import gettext as _
 gettext.textdomain('transcribe')
 
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+DBusGMainLoop(set_as_default=True)
+
 # optional Launchpad integration
 # this shouldn't crash if not found as it is simply used for bug reporting
 try:
@@ -235,6 +239,16 @@ class TranscribeWindow(gtk.Window):
         self.exact_seeking = True
         self._update_id = None
         
+        session_bus = dbus.SessionBus()
+        settings_daemon_proxy = session_bus.get_object(
+                                'org.gnome.SettingsDaemon',
+                                '/org/gnome/SettingsDaemon/MediaKeys')
+        settings_daemon = dbus.Interface(settings_daemon_proxy, 
+                          'org.gnome.SettingsDaemon.MediaKeys')
+        settings_daemon.GrabMediaPlayerKeys('Transcribe', 0)
+        settings_daemon.connect_to_signal('MediaPlayerKeyPressed',
+                                          self.on_media_key)
+        
         if filepath:
             # Open a file passed as commandline parameter.
             # Use idle_add so window is settled.
@@ -324,8 +338,15 @@ class TranscribeWindow(gtk.Window):
     def on_file_ended(self, signal):
         logging.debug('received signal "ended"')
         self.update_ui = False
-        action = self.ui.get_action('/menubar_main/menu_playback/play')
-        action.set_active(False)
+        self.play_action.set_active(False)
+        
+    def on_media_key(self, application, key):
+        logging.debug('Received media key %s for %s' % (key, application))
+        if application == 'Transcribe':
+            if key == 'Play':
+                self.play_action.activate()
+            elif key == 'Stop':
+                self.play_action.set_active(False)
         
     def play(self, action):
         logging.debug('play action triggered')
