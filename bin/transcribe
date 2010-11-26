@@ -17,7 +17,11 @@
 
 import sys
 import os
+import datetime
+import gobject
+gobject.threads_init()
 import gtk
+import gio
 
 import locale
 locale.setlocale(locale.LC_ALL, '')
@@ -45,6 +49,69 @@ if (os.path.exists(os.path.join(PROJECT_ROOT_DIRECTORY, 'transcribe'))
 from transcribe import (
     AboutTranscribeDialog, PreferencesTranscribeDialog)
 from transcribe.helpers import get_builder, get_data_file
+from transcribe.player import TranscribePlayer, QueryError
+from transcribe.fileinfo import FileInfo
+
+# TODO: Make these configurable
+JUMP_BACK_INTERVAL = datetime.time(second=2)
+JUMP_BACK = True
+
+def trim(timestring, digits=1):
+    """
+    Trim a time string to contain only a given number of digits
+    
+    """
+    pos = timestring.find('.')
+    if pos > -1:
+        return timestring[:pos+1+digits]
+    else:
+        return timestring
+
+def ns_to_time(ns):
+    """
+    Converts nanoseconds to a datetime.time object.
+    
+    :Parameters:
+        - `ns`: Nanoseconds as int.
+    
+    :Return:
+        - A datetime.time object.
+        
+    """
+    h = ns / (60 * 60 * 1000000000)
+    mod = ns % (60 * 60 * 1000000000)
+    m = mod / (60 * 1000000000)
+    mod = mod % (60 * 1000000000)
+    s = mod / 1000000000
+    mod = mod % 1000000000
+    ms = mod / 1000
+    return datetime.time(h, m, s, ms)
+    
+def time_to_ns(time):
+    """
+    Converts a datetime.time object to nanoseconds.
+    
+    :Parameters:
+        - `time`: A datetime.time object.
+    
+    :Return:
+        - Nanoseconds as int.
+        
+    """
+    values = []
+    values.append(time.hour * 60 * 60 * 1000000000)
+    values.append(time.minute * 60 * 1000000000)
+    values.append(time.second * 1000000000)
+    values.append(time.microsecond * 1000)
+    return sum(values)
+    
+def filepath_to_uri(path):
+    file = gio.File(path=path)
+    return file.get_uri()
+
+def uri_to_filepath(uri):
+    file = gio.File(uri=uri)
+    return file.get_path()
 
 
 class TranscribeWindow(gtk.Window):
@@ -70,7 +137,7 @@ class TranscribeWindow(gtk.Window):
         new_object = builder.get_object("transcribe_window")
         new_object.finish_initializing(builder)
         return new_object
-
+        
     def finish_initializing(self, builder):
         """Called while initializing this instance in __new__
 
@@ -91,7 +158,7 @@ class TranscribeWindow(gtk.Window):
                              
                              ('open', gtk.STOCK_OPEN, None,
                               '<Ctrl>o', None, self.open),
-                             ('open_recent', None, _('Open _Recent')),
+                             #('open_recent', None, _('Open _Recent')),
                              ('quit', gtk.STOCK_QUIT, None,
                               '<Ctrl>q', None, self.quit),
                               
@@ -105,11 +172,20 @@ class TranscribeWindow(gtk.Window):
                              ('about', gtk.STOCK_ABOUT, None,
                               None, None, self.about)
                              ))
-        play_action = gtk.ToggleAction('play', None, None, 
-                                       gtk.STOCK_MEDIA_PLAY)
-        play_action.connect_proxy(self.builder.get_object('button_play'))
-        play_action.connect('activate', self.play)
-        actions.add_action(play_action)
+        self.play_action = gtk.ToggleAction('play', None, None, 
+                                            gtk.STOCK_MEDIA_PLAY)
+        self.play_action.connect_proxy(self.builder.get_object('button_play'))
+        self.play_action.connect('activate', self.play)
+        actions.add_action(self.play_action)
+        
+        recent_action = gtk.RecentAction('open_recent', _('Open _Recent'),
+                                         None, None)
+        recent_filter = gtk.RecentFilter()
+        recent_filter.add_mime_type('audio/*')
+        recent_action.add_filter(recent_filter)
+        recent_action.set_filter(recent_filter)
+        recent_action.connect('item-activated', self.open_recent)
+        actions.add_action(recent_action)
         
         self.ui = gtk.UIManager()
         self.add_accel_group(self.ui.get_accel_group())
@@ -137,8 +213,48 @@ class TranscribeWindow(gtk.Window):
         #self.preferences = dlg.get_preferences()
 
         # Code for other initialization actions should be added here.
-        speedscale = self.builder.get_object('scale_speed')
-        speedscale.set_value(1)
+        self.player = TranscribePlayer()
+        self.player.connect('ready', self.on_file_ready)
+        self.player.connect('ended', self.on_file_ended)
+        
+        self.recent_manager = gtk.recent_manager_get_default()
+        
+        self.speedscale = self.builder.get_object('scale_speed')
+        self.speedscale.set_value(1)
+        self.slider = self.builder.get_object('scale_position')
+        self.seekscale = self.builder.get_object('scale_seek')
+        
+        self.dur_label = self.builder.get_object('label_duration')
+        self.pos_label = self.builder.get_object('label_position')
+        self.time_str = '00:00.0'
+        self.dur_label.set_text(self.time_str)
+        self.pos_label.set_text(self.time_str)
+        
+        self.oldstate = None
+        self.seeking = False
+        self.exact_seeking = True
+        self._update_id = None
+        
+        if filepath:
+            # Open a file passed as commandline parameter.
+            # Use idle_add so window is settled.
+            gobject.idle_add(self.open_file, filepath)
+            
+    def _get_update_ui(self):
+        return self._update_id is not None
+        
+    def _set_update_ui(self, update):
+        if update:
+            self._update_id = gobject.timeout_add(50, self.play_loop)
+        else:
+            try:
+                gobject.source_remove(self._update_id)
+            except TypeError:
+                # source no longer available, do nothing
+                pass
+            self._update_id = None
+            
+    update_ui = property(_get_update_ui, _set_update_ui)
 
     def about(self, widget, data=None):
         """Display the about box for transcribe."""
@@ -156,20 +272,158 @@ class TranscribeWindow(gtk.Window):
         prefs.destroy()
         
     def open(self, action):
-        pass
+        open_dlg = gtk.FileChooserDialog(_('Open Audio File'), self,
+                                         gtk.FILE_CHOOSER_ACTION_OPEN,
+                                         (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                          gtk.STOCK_OK, gtk.RESPONSE_OK))
+        filter = gtk.FileFilter()
+        filter.set_name(_('All Audio Files'))
+        filter.add_mime_type('audio/*')
+        open_dlg.add_filter(filter)
+        open_dlg.set_filter(filter)
+        result = open_dlg.run()
+        if result == gtk.RESPONSE_OK:
+            self.open_file(open_dlg.get_filename())
+        open_dlg.destroy()
+        
+    def open_recent(self, item):
+        uri = item.get_current_uri()
+        path = uri_to_filepath(uri)
+        self.open_file(path)
+        
+    def open_file(self, filepath):
+        self.play_action.set_active(False)
+        self.slider.set_value(0)
+        self.recent_manager.add_item(filepath_to_uri(filepath))
+        self.player.open(filepath)
+            
+    def on_file_ready(self, signal, filepath):
+        logging.debug('received signal "ready"')
+        gobject.idle_add(self.update_file, filepath)
+        
+    def update_file(self, filepath):
+        fileinfo = FileInfo(filepath)
+        if fileinfo.position:
+            logging.debug('Resuming at position %sns' % fileinfo.position)
+            self.player.position = fileinfo.position
+        duration = ns_to_time(self.player.duration)
+        try:
+            position = ns_to_time(self.player.position)
+        except QueryError:
+            position = datetime.time()
+        if duration.hour:
+            self.time_str = '%H:%M:%S.%f'
+        else:
+            self.time_str = '%M:%S.%f'
+        dur_str = trim(duration.strftime(self.time_str))
+        self.dur_label.set_text(dur_str)
+        filename = os.path.basename(filepath)
+        self.set_title(u'Transcribe \u2013 %s' % filename)
+        self.play_loop()
+        
+    def on_file_ended(self, signal):
+        logging.debug('received signal "ended"')
+        self.update_ui = False
+        action = self.ui.get_action('/menubar_main/menu_playback/play')
+        action.set_active(False)
         
     def play(self, action):
         logging.debug('play action triggered')
+        if action.get_active():
+            self.player.play()
+            self.update_ui = True
+        else:
+            self.update_ui = False
+            self.player.pause()
+            if JUMP_BACK:
+                interval = time_to_ns(JUMP_BACK_INTERVAL)
+                newpos = self.player.position - interval
+                if newpos < 0:
+                    newpos = 0
+                self.player.position = newpos
+                self.play_loop()
+            fileinfo = FileInfo(self.player.filename)
+            fileinfo.position = self.player.position
+            
+    def play_loop(self):
+        try:
+            position = self.player.position
+            duration = self.player.duration
+        except QueryError:
+            return False
+        frac = float(position) / float(duration)
+        scalepos = frac * self.slider.get_adjustment().get_upper()
+        self.slider.set_value(scalepos)
+        pos_str = trim(ns_to_time(position).strftime(self.time_str))
+        self.pos_label.set_text(pos_str)
+        return True
         
     def change_speed(self, action):
-        pass
+        if action.get_name() == 'slower':
+            self.speedscale.set_value(self.speedscale.get_value() - 0.1)
+        else:
+            self.speedscale.set_value(self.speedscale.get_value() + 0.1)
         
     def skip_to(self, action):
         pass
         
     def on_scale_speed_format_value(self, widget, value, data=None):
         return u'%s\xd7' % locale.format('%.1f', value)
+        
+    def on_scale_speed_value_changed(self, range):
+        value = range.get_value()
+        if value != self.player.rate:
+            self.player.rate = value
+            
+    def on_scale_position_value_changed(self, range):
+        if not self.seeking:
+            # Slider changed programmatically, do nothing
+            return
+        value = range.get_value()
+        max_value = self.slider.get_adjustment().get_upper()
+        new_position = self.player.duration * (value/max_value)
+        self.player.position = new_position
+        
+    def on_scale_position_button_press_event(self, widget, event):
+        logging.debug('Begin seeking')
+        self.oldstate = self.player.state
+        self.player.pause()
+        self.seeking = True
+        self.update_ui = True
+        
+    def on_scale_position_button_release_event(self, widget, event):
+        logging.debug('End seeking')
+        self.seeking = False
+        self.player.state = self.oldstate
+        if not self.player.playing:
+            self.update_ui = False
 
+    def on_scale_seek_button_press_event(self, widget, event):
+        logging.debug('Begin exact seeking')
+        self.oldstate = self.player.state
+        self.player.pause()
+        self.exact_seeking = True
+        self.update_ui = True
+        gobject.timeout_add(50, self.seek_loop)
+        
+    def on_scale_seek_button_release_event(self, widget, event):
+        logging.debug('End exact seeking')
+        self.exact_seeking = False
+        self.player.state = self.oldstate
+        if not self.player.playing:
+            self.update_ui = False
+        gobject.idle_add(self.seekscale.set_value, 0)
+        
+    def seek_loop(self):
+        seekvalue = self.seekscale.get_value()
+        if seekvalue != 0:
+            oldpos = self.player.position
+            self.player.position = oldpos + seekvalue * 100000000
+        return self.exact_seeking
+        
+    def on_volumebutton_value_changed(self, scalebutton, value):
+        self.player.volume = value
+        
     def quit(self, widget, data=None):
         """Signal handler for closing the TranscribeWindow."""
         self.destroy()
@@ -177,6 +431,8 @@ class TranscribeWindow(gtk.Window):
     def on_destroy(self, widget, data=None):
         """Called when the TranscribeWindow is closed."""
         # Clean up code for saving application state should be added here.
+        fileinfo = FileInfo(self.player.filename)
+        fileinfo.position = self.player.position
         gtk.main_quit()
 
 if __name__ == "__main__":
@@ -195,6 +451,9 @@ if __name__ == "__main__":
         logging.debug('logging enabled')
 
     # Run the application.
+    filepath = None
+    if args and os.path.isfile(args[0]):
+        filepath = args[0]
     window = TranscribeWindow()
     window.show()
     gtk.main()
