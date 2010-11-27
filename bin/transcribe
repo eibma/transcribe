@@ -21,7 +21,6 @@ import datetime
 import gobject
 gobject.threads_init()
 import gtk
-import gio
 
 import locale
 locale.setlocale(locale.LC_ALL, '')
@@ -51,71 +50,16 @@ if (os.path.exists(os.path.join(PROJECT_ROOT_DIRECTORY, 'transcribe'))
     os.putenv('PYTHONPATH', PROJECT_ROOT_DIRECTORY) # for subprocesses
 
 from transcribe import (
-    AboutTranscribeDialog, PreferencesTranscribeDialog)
-from transcribe.helpers import get_builder, get_data_file
+    AboutTranscribeDialog, PreferencesTranscribeDialog, SkiptoDialog)
+from transcribe.helpers import (get_builder, get_data_file,
+                                time_to_ns, ns_to_time, trim,
+                                uri_to_filepath, filepath_to_uri)
 from transcribe.player import TranscribePlayer, QueryError
 from transcribe.fileinfo import FileInfo
 
 # TODO: Make these configurable
 JUMP_BACK_INTERVAL = datetime.time(second=2)
 JUMP_BACK = True
-
-def trim(timestring, digits=1):
-    """
-    Trim a time string to contain only a given number of digits
-    
-    """
-    pos = timestring.find('.')
-    if pos > -1:
-        return timestring[:pos+1+digits]
-    else:
-        return timestring
-
-def ns_to_time(ns):
-    """
-    Converts nanoseconds to a datetime.time object.
-    
-    :Parameters:
-        - `ns`: Nanoseconds as int.
-    
-    :Return:
-        - A datetime.time object.
-        
-    """
-    h = ns / (60 * 60 * 1000000000)
-    mod = ns % (60 * 60 * 1000000000)
-    m = mod / (60 * 1000000000)
-    mod = mod % (60 * 1000000000)
-    s = mod / 1000000000
-    mod = mod % 1000000000
-    ms = mod / 1000
-    return datetime.time(h, m, s, ms)
-    
-def time_to_ns(time):
-    """
-    Converts a datetime.time object to nanoseconds.
-    
-    :Parameters:
-        - `time`: A datetime.time object.
-    
-    :Return:
-        - Nanoseconds as int.
-        
-    """
-    values = []
-    values.append(time.hour * 60 * 60 * 1000000000)
-    values.append(time.minute * 60 * 1000000000)
-    values.append(time.second * 1000000000)
-    values.append(time.microsecond * 1000)
-    return sum(values)
-    
-def filepath_to_uri(path):
-    file = gio.File(path=path)
-    return file.get_uri()
-
-def uri_to_filepath(uri):
-    file = gio.File(uri=uri)
-    return file.get_path()
 
 
 class TranscribeWindow(gtk.Window):
@@ -395,7 +339,17 @@ class TranscribeWindow(gtk.Window):
             self.speedscale.set_value(self.speedscale.get_value() + 0.1)
         
     def skip_to(self, action):
-        pass
+        skip_dlg = SkiptoDialog.SkiptoDialog()
+        skip_dlg.time_format = self.time_str
+        skip_dlg.spinbutton.set_range(0, self.player.duration)
+        page = time_to_ns(datetime.time(second=1))
+        skip_dlg.spinbutton.set_increments(page / 10, page)
+        skip_dlg.spinbutton.set_value(self.player.position)
+        response = skip_dlg.run()
+        if response == gtk.RESPONSE_OK:
+            self.player.position = int(skip_dlg.spinbutton.get_value())
+            gobject.idle_add(self.play_loop)
+        skip_dlg.destroy()
         
     def on_scale_speed_format_value(self, widget, value, data=None):
         return u'%s\xd7' % locale.format('%.1f', value)
