@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-11-29 21:05+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../transcribe.desktop.in.h:1 ../data/ui/TranscribeWindow.ui.h:3
+msgid "Transcribe"
+msgstr ""
+
+#: ../transcribe.desktop.in.h:2
+msgid "Transcribe application"
+msgstr ""
+
+#: ../data/ui/SkiptoDialog.ui.h:1
+msgid "Skip to:"
+msgstr ""
+
+#: ../data/ui/TranscribeWindow.ui.h:1
+msgid "00:00.000"
+msgstr ""
+
+#: ../data/ui/TranscribeWindow.ui.h:2
+msgid "Speed:"
+msgstr ""
+
+#: ../bin/transcribe.py:103
+msgid "_File"
+msgstr ""
+
+#: ../bin/transcribe.py:104
+msgid "_Playback"
+msgstr ""
+
+#: ../bin/transcribe.py:105
+msgid "_Help"
+msgstr ""
+
+#: ../bin/transcribe.py:113
+msgid "Slower"
+msgstr ""
+
+#: ../bin/transcribe.py:115
+msgid "Faster"
+msgstr ""
+
+#: ../bin/transcribe.py:117
+msgid "Skip to …"
+msgstr ""
+
+#: ../bin/transcribe.py:129
+msgid "Open _Recent"
+msgstr ""
+
+#: ../bin/transcribe.py:238
+msgid "Open Audio File"
+msgstr ""
+
+#: ../bin/transcribe.py:243
+msgid "All Audio Files"
+msgstr ""
+
+#: ../bin/transcribe.py:431
+msgid "Show debug messages"
+msgstr ""
