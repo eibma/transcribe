@@ -1,3 +1,5 @@
 project = transcribe
 version = 0.4.3
 template = ubuntu-application
+ppa = transcribe
+lp_id = transcribe
