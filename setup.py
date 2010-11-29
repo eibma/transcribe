@@ -76,7 +76,7 @@ def update_desktop_file(datadir):
 class InstallAndUpdateDataDirectory(DistUtilsExtra.auto.install_auto):
     def run(self):
         previous_value = update_data_path(self.prefix + '/share/transcribe/')
-        update_desktop_file(self.prefix + '/share/transcribe/')
+        #update_desktop_file(self.prefix + '/share/transcribe/')
         DistUtilsExtra.auto.install_auto.run(self)
         update_data_path(self.prefix, previous_value)
 
@@ -94,7 +94,7 @@ DistUtilsExtra.auto.setup(
     #author_email='email@ubuntu.com',
     #description='UI for managing …',
     #long_description='Here a longer description',
-    #url='https://launchpad.net/transcribe',
+    url='https://launchpad.net/transcribe',
     cmdclass={'install': InstallAndUpdateDataDirectory}
     )
 

@@ -6,7 +6,7 @@
   <!-- interface-local-resource-path ../media -->
   <object class="TranscribeWindow" id="transcribe_window">
     <property name="title" translatable="yes">Transcribe</property>
-    <property name="icon">../media/icon.png</property>
+    <property name="icon_name">transcribe</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <object class="GtkVBox" id="vbox1">

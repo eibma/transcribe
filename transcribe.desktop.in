@@ -1,7 +1,7 @@
 [Desktop Entry]
 _Name=Transcribe
 _Comment=Transcribe application
-Categories=GNOME;Utility;
+Categories=GNOME;AudioVideo;Audio
 Exec=transcribe
 Icon=transcribe
 Terminal=false
