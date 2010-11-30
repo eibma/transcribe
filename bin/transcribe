@@ -415,8 +415,9 @@ class TranscribeWindow(gtk.Window):
     def on_destroy(self, widget, data=None):
         """Called when the TranscribeWindow is closed."""
         # Clean up code for saving application state should be added here.
-        fileinfo = FileInfo(self.player.filename)
-        fileinfo.position = self.player.position
+        if self.player.filename:
+            fileinfo = FileInfo(self.player.filename)
+            fileinfo.position = self.player.position
         if self.settings_daemon:
             self.settings_daemon.ReleaseMediaPlayerKeys('Transcribe')
         gtk.main_quit()
