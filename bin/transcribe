@@ -190,10 +190,10 @@ class TranscribeWindow(gtk.Window):
                                     '/org/gnome/SettingsDaemon/MediaKeys')
             self.settings_daemon = dbus.Interface(settings_daemon_proxy, 
                                    'org.gnome.SettingsDaemon.MediaKeys')
+            self.settings_daemon.GrabMediaPlayerKeys('Transcribe', 0)
         except dbus.DBusException:
             self.settings_daemon = None
         else:
-            self.settings_daemon.GrabMediaPlayerKeys('Transcribe', 0)
             self.settings_daemon.connect_to_signal('MediaPlayerKeyPressed',
                                                    self.on_media_key)
             self.connect('focus-in-event', self.on_focus)
