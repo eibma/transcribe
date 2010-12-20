@@ -130,6 +130,12 @@ class TranscribeWindow(gtk.Window):
         self.play_action.connect_proxy(self.builder.get_object('button_play'))
         self.play_action.connect('activate', self.play)
         actions.add_action(self.play_action)
+        self.forward_action = actions.get_action('forward')
+        self.forward_action.connect_proxy(
+                self.builder.get_object('button_seek_forward'))
+        self.rewind_action = actions.get_action('rewind')
+        self.rewind_action.connect_proxy(
+                self.builder.get_object('button_seek_back'))
         
         recent_action = gtk.RecentAction('open_recent', _('Open _Recent'),
                                          None, None)
