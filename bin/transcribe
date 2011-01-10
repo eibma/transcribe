@@ -61,6 +61,7 @@ from transcribe.fileinfo import FileInfo
 JUMP_BACK_INTERVAL = datetime.time(second=2)
 JUMP_BACK = True
 SEEK_INTERVAL = datetime.time(second=5)
+TIMESTAMP_FORMAT = "%s" # allows formats like "[%s]", "<%s>", etc.
 
 
 class TranscribeWindow(gtk.Window):
@@ -145,6 +146,7 @@ class TranscribeWindow(gtk.Window):
         recent_filter.add_mime_type('audio/*')
         recent_action.add_filter(recent_filter)
         recent_action.set_filter(recent_filter)
+        recent_action.set_sort_type(gtk.RECENT_SORT_MRU)
         recent_action.connect('item-activated', self.open_recent)
         actions.add_action(recent_action)
         
@@ -371,7 +373,7 @@ class TranscribeWindow(gtk.Window):
         position = self.player.position
         pos_str = trim(ns_to_time(position).strftime(self.time_str))
         clipboard = gtk.clipboard_get()
-        clipboard.set_text(pos_str)
+        clipboard.set_text(TIMESTAMP_FORMAT % pos_str)
     
     def skip_to(self, action):
         skip_dlg = SkiptoDialog.SkiptoDialog()
