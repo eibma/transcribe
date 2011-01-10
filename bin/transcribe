@@ -107,6 +107,8 @@ class TranscribeWindow(gtk.Window):
                              
                              ('open', gtk.STOCK_OPEN, None,
                               '<Ctrl>o', None, self.open),
+                             ('copy_position', None, _('_Copy position'),
+                              '<Ctrl>c', None, self.copy_position),
                              #('open_recent', None, _('Open _Recent')),
                              ('quit', gtk.STOCK_QUIT, None,
                               '<Ctrl>q', None, self.quit),
@@ -364,6 +366,12 @@ class TranscribeWindow(gtk.Window):
         if new_position < 0:
             new_position = 0
         self.player.position = new_position
+        
+    def copy_position(self, action):
+        position = self.player.position
+        pos_str = trim(ns_to_time(position).strftime(self.time_str))
+        clipboard = gtk.clipboard_get()
+        clipboard.set_text(pos_str)
     
     def skip_to(self, action):
         skip_dlg = SkiptoDialog.SkiptoDialog()

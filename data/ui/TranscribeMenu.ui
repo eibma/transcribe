@@ -4,6 +4,8 @@
       <menuitem action="open"/>
       <menuitem action="open_recent"/>
       <separator/>
+      <menuitem action="copy_position"/>
+      <separator/>
       <menuitem action="quit"/>
     </menu>
     <menu action="menu_playback">
