@@ -297,7 +297,7 @@ class TranscribeWindow(gtk.Window):
         self.dur_label.set_text(dur_str)
         filename = os.path.basename(filepath)
         self.set_title(u'Transcribe \u2013 %s' % filename)
-        self.play_loop()
+        gobject.idle_add(self.play_loop)
         
     def on_file_ended(self, signal):
         logging.debug('received signal "ended"')
@@ -336,8 +336,15 @@ class TranscribeWindow(gtk.Window):
                 self.player.position = newpos
                 self.play_loop()
             fileinfo = FileInfo(self.player.filename)
-            fileinfo.position = self.player.position
-            
+            try:
+                fileinfo.position = self.player.position
+            except QueryError:
+                # position cannot be found out
+                # so do nothing until we find a better way
+                # to deal with QueryErrors
+                logging.warn('query failed, cannot save current position')
+                pass
+    
     def play_loop(self):
         try:
             position = self.player.position
@@ -362,12 +369,14 @@ class TranscribeWindow(gtk.Window):
         if new_position > self.player.duration:
             new_position = self.player.duration
         self.player.position = new_position
+        gobject.idle_add(self.play_loop)
         
     def rewind(self, action):
         new_position = self.player.position - time_to_ns(SEEK_INTERVAL)
         if new_position < 0:
             new_position = 0
         self.player.position = new_position
+        gobject.idle_add(self.play_loop)
         
     def copy_position(self, action):
         position = self.player.position
