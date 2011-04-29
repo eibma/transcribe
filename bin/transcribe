@@ -140,7 +140,7 @@ class TranscribeWindow(gtk.Window):
         self.rewind_action.connect_proxy(
                 self.builder.get_object('button_seek_back'))
         
-        recent_action = gtk.RecentAction('open_recent', _('Open _Recent'),
+        recent_action = gtk.RecentAction('open_recent', _('_Recent files'),
                                          None, None)
         recent_filter = gtk.RecentFilter()
         recent_filter.add_mime_type('audio/*')
