@@ -92,8 +92,8 @@ DistUtilsExtra.auto.setup(
     license='GPL-3',
     author='Frederik Elwert',
     author_email='frederik.elwert@web.de',
-    #description='UI for managing …',
-    #long_description='Here a longer description',
+    description='Transcribe',
+    long_description='Transcribe is an audio player focussed on transcription.',
     url='https://launchpad.net/transcribe',
     cmdclass={'install': InstallAndUpdateDataDirectory}
     )
