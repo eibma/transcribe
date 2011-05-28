@@ -1,0 +1,12 @@
+Format-Specification: http://wiki.debian.org/Proposals/CopyrightFormat
+Upstream-Name: transcribe
+Upstream-Maintainer: UNKNOWN <UNKNOWN>
+Upstream-Source: https://launchpad.net/transcribe
+
+Files: *
+Copyright: (C) 2010 Frederik Elwert <frederik.elwert@web.de>
+Copyright: (C) 2010 Frederik Elwert &lt;frederik.elwert@web.de&gt;
+Copyright: (C) 2010 Frederik Elwert &lt;frederik.elwert@web.de&gt;</property>
+License: GPL-3
+ The full text of the GPL is distributed in
+ /usr/share/common-licenses/GPL-3 on Debian systems.

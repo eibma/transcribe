@@ -88,7 +88,7 @@ class InstallAndUpdateDataDirectory(DistUtilsExtra.auto.install_auto):
 
 DistUtilsExtra.auto.setup(
     name='transcribe',
-    version='0.1-public4',
+    version='11.05',
     license='GPL-3',
     author='Frederik Elwert',
     author_email='frederik.elwert@web.de',
