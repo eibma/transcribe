@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-29 21:05+0100\n"
+"POT-Creation-Date: 2011-05-28 21:07+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Frederik Elwert <frederik.elwert@web.de>\n"
 "Language-Team: \n"
@@ -13,13 +13,13 @@ msgstr ""
 "X-Poedit-Country: GERMANY\n"
 
 #: ../transcribe.desktop.in.h:1
-#: ../data/ui/TranscribeWindow.ui.h:3
+#: ../data/ui/TranscribeWindow.ui.h:5
 msgid "Transcribe"
 msgstr "Transcribe"
 
 #: ../transcribe.desktop.in.h:2
-msgid "Transcribe application"
-msgstr "Transcribe"
+msgid "Transcribe audio player"
+msgstr "Transcribe Audio-Player"
 
 #: ../data/ui/SkiptoDialog.ui.h:1
 msgid "Skip to:"
@@ -30,46 +30,63 @@ msgid "00:00.000"
 msgstr "00:00.000"
 
 #: ../data/ui/TranscribeWindow.ui.h:2
+msgid "Change playback speed"
+msgstr "Wiedergabegeschwindigkeit ändern"
+
+#: ../data/ui/TranscribeWindow.ui.h:3
+msgid "Move slider to seek"
+msgstr "Schieberegler zum Suchen bewegen"
+
+#: ../data/ui/TranscribeWindow.ui.h:4
 msgid "Speed:"
 msgstr "Geschwindigkeit:"
 
-#: ../bin/transcribe.py:103
+#: ../bin/transcribe.py:105
 msgid "_File"
 msgstr "_Datei"
 
-#: ../bin/transcribe.py:104
+#: ../bin/transcribe.py:106
 msgid "_Playback"
 msgstr "_Wiedergabe"
 
-#: ../bin/transcribe.py:105
+#: ../bin/transcribe.py:107
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../bin/transcribe.py:113
+#: ../bin/transcribe.py:111
+msgid "_Copy position"
+msgstr "_Position kopieren"
+
+#: ../bin/transcribe.py:117
 msgid "Slower"
 msgstr "Langsamer"
 
-#: ../bin/transcribe.py:115
+#: ../bin/transcribe.py:119
 msgid "Faster"
 msgstr "Schneller"
 
-#: ../bin/transcribe.py:117
-msgid "Skip to …"
+#: ../bin/transcribe.py:125
+msgid "Skip to ..."
 msgstr "Springe zu …"
 
-#: ../bin/transcribe.py:129
-msgid "Open _Recent"
+#: ../bin/transcribe.py:143
+msgid "_Recent files"
 msgstr "Zuletzt geöffnete Dateien"
 
-#: ../bin/transcribe.py:238
+#: ../bin/transcribe.py:253
 msgid "Open Audio File"
 msgstr "Audio-Datei öffnen"
 
-#: ../bin/transcribe.py:243
+#: ../bin/transcribe.py:258
 msgid "All Audio Files"
 msgstr "Alle Audio-Dateien"
 
-#: ../bin/transcribe.py:431
+#: ../bin/transcribe.py:484
 msgid "Show debug messages"
 msgstr "Diagnosemeldungen anzeigen"
+
+#~ msgid "Skip to …"
+#~ msgstr "Springe zu …"
+#~ msgid "Open _Recent"
+#~ msgstr "Zuletzt geöffnete Dateien"
 
