@@ -20,6 +20,7 @@ logger = logging.getLogger('fileinfo')
 import gio
 
 POSITION_ATTRIBUTE = "metadata::totem::position"
+SPEED_ATTRIBUTE = "metadata::transcribe::speed"
 MSECOND = 1000000
 
 
@@ -34,27 +35,54 @@ class FileInfo (object):
 
     def __init__(self, filepath):
         self.filepath = filepath
-        self._position = None
+        self._cache = {}
+        
+    def _get_gio_attribute(self, attribute):
+        """
+        A generic method to hide the verbose process of getting GIO attributes.
+        
+        """
+        # Use cached values if available to limit requests
+        if attribute in self._cache:
+            return self._cache[attribute]
+        file = gio.File(path=self.filepath)
+        info = file.query_info(attribute)
+        value = info.get_attribute_as_string(attribute)
+        self._cache[attribute] = value
+        logger.debug('Get attribute "%s": %s' % (attribute, value))
+        return value
+        
+    def _set_gio_attribute(self, attribute, value):
+        """
+        A generic method to hide the verbose process of setting GIO attributes.
+        
+        """
+        logger.debug('Set attribute "%s": %s' % (attribute, value))
+        file = gio.File(path=self.filepath)
+        info = file.query_info(attribute)
+        info.set_attribute_string(attribute, str(value))
+        file.set_attributes_from_info(info)
+        self._cache[attribute] = value
         
     def _get_position(self):
-        if self._position is not None:
-            return self._position
-        file = gio.File(path=self.filepath)
-        info = file.query_info(POSITION_ATTRIBUTE)
-        position = info.get_attribute_as_string(POSITION_ATTRIBUTE)
+        position = self._get_gio_attribute(POSITION_ATTRIBUTE)
         if position:
             position = int(position) * MSECOND
-        self._position = position
-        logger.debug('Get position: %s' % position)
         return position
     
     def _set_position(self, position):
-        logger.debug('Set position: %s' % position)
-        self._position = position
-        file = gio.File(path=self.filepath)
-        info = file.query_info(POSITION_ATTRIBUTE)
-        info.set_attribute_string(POSITION_ATTRIBUTE, str(position / MSECOND))
-        file.set_attributes_from_info(info)
+        self._set_gio_attribute(POSITION_ATTRIBUTE, str(position / MSECOND))
         
     position = property(_get_position, _set_position)
+    
+    def _get_speed(self):
+        speed = self._get_gio_attribute(SPEED_ATTRIBUTE)
+        if speed:
+            speed = float(speed)
+        return speed
+        
+    def _set_speed(self, speed):
+        self._set_gio_attribute(SPEED_ATTRIBUTE, str(speed))
+        
+    speed = property(_get_speed, _set_speed)
 

@@ -284,6 +284,9 @@ class TranscribeWindow(gtk.Window):
         if fileinfo.position:
             logging.debug('Resuming at position %sns' % fileinfo.position)
             self.player.position = fileinfo.position
+        if fileinfo.speed:
+            logging.debug('Resuming with speed %s' % fileinfo.speed)
+            self.speedscale.set_value(fileinfo.speed)
         duration = ns_to_time(self.player.duration)
         try:
             position = ns_to_time(self.player.position)
@@ -404,6 +407,8 @@ class TranscribeWindow(gtk.Window):
         value = range.get_value()
         if value != self.player.rate:
             self.player.rate = value
+            fileinfo = FileInfo(self.player.filename)
+            fileinfo.speed = value
             
     def on_scale_position_value_changed(self, range):
         if not self.seeking:
@@ -464,6 +469,7 @@ class TranscribeWindow(gtk.Window):
         if self.player.filename:
             fileinfo = FileInfo(self.player.filename)
             fileinfo.position = self.player.position
+            fileinfo.speed = self.player.rate
         if self.settings_daemon:
             self.settings_daemon.ReleaseMediaPlayerKeys('Transcribe')
         gtk.main_quit()
