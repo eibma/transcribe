@@ -1,3 +1,33 @@
+transcribe (11.05) lucid; urgency=low
+
+  * Update translations
+  * Save current playback speed for each file
+  * Add German translation
+  * Add MimeType to desktop file
+  * Add description to setup.py
+  * Use idle queue for GUI updates and hide QueryErrors
+  * Commit after share
+  * * Sort recent files properly   * Make copy format configurable
+  * Add action to copy current position to clipboard
+  * Add buttons for fastforward and rewind
+  * bump version number
+  * Add actions for forward and rewind including media key support
+  * bump version number
+  * Catch UnknownMethod error with SettingsDaemon in an attempt to fix
+    Transcribe under Xfce.
+  * First preview release
+  * Fix problem with quitting when no file is open
+  * Add translation template
+  * Added icons and use default icon location instead of media directory
+  * Added launchpad information for quickly
+  * Implement skip to
+  * Improve media keys support: re-grab when window gets focus
+  * Add support for media keys via GNOME Settings Daemon
+  * Implement most of the basic player fuctionality.
+  * Add basic GUI and licensing
+
+ -- Frederik Elwert <frederik.elwert@web.de>  Sat, 28 May 2011 21:12:34 +0200
+
 transcribe (0.1-public4) lucid; urgency=low
 
   * New release.
