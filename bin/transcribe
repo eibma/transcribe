@@ -50,7 +50,8 @@ if (os.path.exists(os.path.join(PROJECT_ROOT_DIRECTORY, 'transcribe'))
     os.putenv('PYTHONPATH', PROJECT_ROOT_DIRECTORY) # for subprocesses
 
 from transcribe import (
-    AboutTranscribeDialog, PreferencesTranscribeDialog, SkiptoDialog)
+    # PreferencesTranscribeDialog,
+    AboutTranscribeDialog, SkiptoDialog)
 from transcribe.helpers import (get_builder, get_data_file,
                                 time_to_ns, ns_to_time, trim,
                                 uri_to_filepath, filepath_to_uri)
