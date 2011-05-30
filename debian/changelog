@@ -7,7 +7,8 @@ transcribe (11.05) lucid; urgency=low
   * Add description to setup.py
   * Use idle queue for GUI updates and hide QueryErrors
   * Commit after share
-  * * Sort recent files properly   * Make copy format configurable
+  * Sort recent files properly
+  * Make copy format configurable
   * Add action to copy current position to clipboard
   * Add buttons for fastforward and rewind
   * bump version number
