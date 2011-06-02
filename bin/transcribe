@@ -301,7 +301,7 @@ class TranscribeWindow(gtk.Window):
         self.dur_label.set_text(dur_str)
         filename = os.path.basename(filepath)
         self.set_title(u'Transcribe \u2013 %s' % filename)
-        gobject.idle_add(self.play_loop)
+        gobject.idle_add(self.play_loop, True)
         
     def on_file_ended(self, signal):
         logging.debug('received signal "ended"')
@@ -338,7 +338,7 @@ class TranscribeWindow(gtk.Window):
                 if newpos < 0:
                     newpos = 0
                 self.player.position = newpos
-                self.play_loop()
+                gobject.idle_add(self.play_loop, True)
             fileinfo = FileInfo(self.player.filename)
             try:
                 fileinfo.position = self.player.position
@@ -349,7 +349,7 @@ class TranscribeWindow(gtk.Window):
                 logging.warn('query failed, cannot save current position')
                 pass
     
-    def play_loop(self):
+    def play_loop(self, once=False):
         try:
             position = self.player.position
             duration = self.player.duration
@@ -360,7 +360,10 @@ class TranscribeWindow(gtk.Window):
         self.slider.set_value(scalepos)
         pos_str = trim(ns_to_time(position).strftime(self.time_str))
         self.pos_label.set_text(pos_str)
-        return True
+        if once:
+            return False
+        else:
+            return True
         
     def change_speed(self, action):
         if action.get_name() == 'slower':
@@ -373,14 +376,14 @@ class TranscribeWindow(gtk.Window):
         if new_position > self.player.duration:
             new_position = self.player.duration
         self.player.position = new_position
-        gobject.idle_add(self.play_loop)
+        gobject.idle_add(self.play_loop, True)
         
     def rewind(self, action):
         new_position = self.player.position - time_to_ns(SEEK_INTERVAL)
         if new_position < 0:
             new_position = 0
         self.player.position = new_position
-        gobject.idle_add(self.play_loop)
+        gobject.idle_add(self.play_loop, True)
         
     def copy_position(self, action):
         position = self.player.position
@@ -398,7 +401,7 @@ class TranscribeWindow(gtk.Window):
         response = skip_dlg.run()
         if response == gtk.RESPONSE_OK:
             self.player.position = int(skip_dlg.spinbutton.get_value())
-            gobject.idle_add(self.play_loop)
+            gobject.idle_add(self.play_loop, True)
         skip_dlg.destroy()
         
     def on_scale_speed_format_value(self, widget, value, data=None):
