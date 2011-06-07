@@ -3,7 +3,7 @@
   
   
   <object class="AboutTranscribeDialog" id="about_transcribe_dialog">
-    <property name="version">11.05</property><property name="border_width">5</property>
+    <property name="version">11.06</property><property name="border_width">5</property>
     <property name="icon_name">transcribe</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
