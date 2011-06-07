@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-28 21:08+0200\n"
+"POT-Creation-Date: 2011-06-07 20:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,46 +44,46 @@ msgstr ""
 msgid "Speed:"
 msgstr ""
 
-#: ../bin/transcribe.py:105
+#: ../bin/transcribe.py:106
 msgid "_File"
 msgstr ""
 
-#: ../bin/transcribe.py:106
+#: ../bin/transcribe.py:107
 msgid "_Playback"
 msgstr ""
 
-#: ../bin/transcribe.py:107
+#: ../bin/transcribe.py:108
 msgid "_Help"
 msgstr ""
 
-#: ../bin/transcribe.py:111
+#: ../bin/transcribe.py:112
 msgid "_Copy position"
 msgstr ""
 
-#: ../bin/transcribe.py:117
+#: ../bin/transcribe.py:118
 msgid "Slower"
 msgstr ""
 
-#: ../bin/transcribe.py:119
+#: ../bin/transcribe.py:120
 msgid "Faster"
 msgstr ""
 
-#: ../bin/transcribe.py:125
+#: ../bin/transcribe.py:126
 msgid "Skip to ..."
 msgstr ""
 
-#: ../bin/transcribe.py:143
+#: ../bin/transcribe.py:144
 msgid "_Recent files"
 msgstr ""
 
-#: ../bin/transcribe.py:253
+#: ../bin/transcribe.py:254
 msgid "Open Audio File"
 msgstr ""
 
-#: ../bin/transcribe.py:258
+#: ../bin/transcribe.py:259
 msgid "All Audio Files"
 msgstr ""
 
-#: ../bin/transcribe.py:484
+#: ../bin/transcribe.py:491
 msgid "Show debug messages"
 msgstr ""

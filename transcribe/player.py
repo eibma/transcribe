@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 ### BEGIN LICENSE
 # Copyright (C) 2010 Frederik Elwert <frederik.elwert@web.de>
 # This program is free software: you can redistribute it and/or modify it 
