@@ -454,8 +454,11 @@ class TranscribeWindow(gtk.Window):
         gobject.idle_add(self.seekscale.set_value, 0)
         
     def seek_loop(self):
-        seekvalue = self.seekscale.get_value()
-        if seekvalue != 0:
+        scalevalue = self.seekscale.get_value()
+        if scalevalue != 0:
+            seekvalue = (abs(scalevalue) + 0.75) ** 2
+            if scalevalue < 0:
+                seekvalue *= -1
             oldpos = self.player.position
             self.player.position = oldpos + seekvalue * 100000000
         return self.exact_seeking
