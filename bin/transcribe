@@ -120,9 +120,9 @@ class TranscribeWindow(gtk.Window):
                              ('faster', None, _('Faster'),
                               '<Ctrl>f', None, self.change_speed),
                              ('forward', gtk.STOCK_MEDIA_FORWARD, None,
-                              None, None, self.forward),
+                              '<Ctrl>Right', None, self.forward),
                              ('rewind', gtk.STOCK_MEDIA_REWIND, None,
-                              None, None, self.rewind),
+                              '<Ctrl>Left', None, self.rewind),
                              ('skip', None, _('Skip to ...'),
                               '<Ctrl>k', None, self.skip_to),
                               
@@ -133,7 +133,7 @@ class TranscribeWindow(gtk.Window):
                                             gtk.STOCK_MEDIA_PLAY)
         self.play_action.connect_proxy(self.builder.get_object('button_play'))
         self.play_action.connect('activate', self.play)
-        actions.add_action(self.play_action)
+        actions.add_action_with_accel(self.play_action, '<Ctrl>space')
         self.forward_action = actions.get_action('forward')
         self.forward_action.connect_proxy(
                 self.builder.get_object('button_seek_forward'))
