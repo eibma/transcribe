@@ -235,6 +235,8 @@ class TranscribeWindow(gtk.Window):
         if update:
             self._update_id = gobject.timeout_add(50, self.play_loop)
         else:
+            # run play_loop one more time to make sure UI is up to date.
+            self.play_loop()
             try:
                 gobject.source_remove(self._update_id)
             except TypeError:
@@ -448,8 +450,6 @@ class TranscribeWindow(gtk.Window):
 
     def on_scale_seek_button_press_event(self, widget, event):
         logging.debug('Begin exact seeking')
-        self.oldstate = self.player.state
-        self.player.pause()
         self.exact_seeking = True
         self.update_ui = True
         gobject.timeout_add(50, self.seek_loop)
@@ -457,7 +457,6 @@ class TranscribeWindow(gtk.Window):
     def on_scale_seek_button_release_event(self, widget, event):
         logging.debug('End exact seeking')
         self.exact_seeking = False
-        self.player.state = self.oldstate
         if not self.player.playing:
             self.update_ui = False
         gobject.idle_add(self.seekscale.set_value, 0)
