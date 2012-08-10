@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
-DEB_PYTHON_SYSTEM := pysupport
+%:
+ifneq ($(shell dh -l | grep -xF translations),)
+	dh $@ --with python2,translations
+else
+	dh $@ --with python2
+endif
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/python-distutils.mk
-include /usr/share/cdbs/1/rules/langpack.mk
+

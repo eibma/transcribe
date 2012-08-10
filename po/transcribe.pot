@@ -8,15 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-07 20:34+0200\n"
+"POT-Creation-Date: 2012-05-12 18:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../transcribe.desktop.in.h:1 ../data/ui/TranscribeWindow.ui.h:5
+#: ../transcribe.desktop.in.h:1 ../data/ui/TranscribeWindow.ui.h:1
 msgid "Transcribe"
 msgstr ""
 
@@ -28,12 +29,8 @@ msgstr ""
 msgid "Skip to:"
 msgstr ""
 
-#: ../data/ui/TranscribeWindow.ui.h:1
-msgid "00:00.000"
-msgstr ""
-
 #: ../data/ui/TranscribeWindow.ui.h:2
-msgid "Change playback speed"
+msgid "00:00.000"
 msgstr ""
 
 #: ../data/ui/TranscribeWindow.ui.h:3
@@ -44,46 +41,50 @@ msgstr ""
 msgid "Speed:"
 msgstr ""
 
-#: ../bin/transcribe.py:106
+#: ../data/ui/TranscribeWindow.ui.h:5
+msgid "Change playback speed"
+msgstr ""
+
+#: ../bin/transcribe.py:115
 msgid "_File"
 msgstr ""
 
-#: ../bin/transcribe.py:107
+#: ../bin/transcribe.py:116
 msgid "_Playback"
 msgstr ""
 
-#: ../bin/transcribe.py:108
+#: ../bin/transcribe.py:117
 msgid "_Help"
 msgstr ""
 
-#: ../bin/transcribe.py:112
+#: ../bin/transcribe.py:121
 msgid "_Copy position"
 msgstr ""
 
-#: ../bin/transcribe.py:118
+#: ../bin/transcribe.py:127
 msgid "Slower"
 msgstr ""
 
-#: ../bin/transcribe.py:120
+#: ../bin/transcribe.py:129
 msgid "Faster"
 msgstr ""
 
-#: ../bin/transcribe.py:126
+#: ../bin/transcribe.py:135
 msgid "Skip to ..."
 msgstr ""
 
-#: ../bin/transcribe.py:144
+#: ../bin/transcribe.py:153
 msgid "_Recent files"
 msgstr ""
 
-#: ../bin/transcribe.py:254
+#: ../bin/transcribe.py:263
 msgid "Open Audio File"
 msgstr ""
 
-#: ../bin/transcribe.py:259
+#: ../bin/transcribe.py:268
 msgid "All Audio Files"
 msgstr ""
 
-#: ../bin/transcribe.py:491
+#: ../bin/transcribe.py:500
 msgid "Show debug messages"
 msgstr ""

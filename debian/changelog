@@ -1,3 +1,9 @@
+transcribe (11.06~oneiric0) oneiric; urgency=low
+
+  * No-change upload for oneiric
+
+ -- Frederik Elwert <frederik.elwert@web.de>  Sun, 08 Jul 2012 17:58:35 +0200
+
 transcribe (11.06) lucid; urgency=low
 
   * Upgrade quickly to 0.6.1

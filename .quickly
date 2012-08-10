@@ -3,3 +3,4 @@ version = 0.6.1
 template = ubuntu-application
 ppa = transcribe
 lp_id = transcribe
+dependencies = gstreamer0.10-plugins-bad

@@ -1,7 +1,7 @@
-Format-Specification: http://wiki.debian.org/Proposals/CopyrightFormat
-Upstream-Name: transcribe
-Upstream-Maintainer: UNKNOWN <UNKNOWN>
-Upstream-Source: https://launchpad.net/transcribe
+Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
+Name: transcribe
+Maintainer: Frederik Elwert <frederik.elwert@web.de>
+Source: https://launchpad.net/transcribe
 
 Files: *
 Copyright: (C) 2010 Frederik Elwert <frederik.elwert@web.de>
