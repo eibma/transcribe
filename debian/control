@@ -14,9 +14,7 @@ Architecture: all
 XB-Python-Version: ${python:Versions}
 Depends: ${misc:Depends},
  ${python:Depends},
- python-launchpad-integration,
  python-dbus,
- python-desktopcouch-records,
  python-apport,
  python-gobject-2,
  python-gst0.10,

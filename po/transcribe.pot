@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-12 18:46+0200\n"
+"POT-Creation-Date: 2013-07-22 11:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,14 +77,14 @@ msgstr ""
 msgid "_Recent files"
 msgstr ""
 
-#: ../bin/transcribe.py:263
+#: ../bin/transcribe.py:265
 msgid "Open Audio File"
 msgstr ""
 
-#: ../bin/transcribe.py:268
+#: ../bin/transcribe.py:270
 msgid "All Audio Files"
 msgstr ""
 
-#: ../bin/transcribe.py:500
+#: ../bin/transcribe.py:499
 msgid "Show debug messages"
 msgstr ""
